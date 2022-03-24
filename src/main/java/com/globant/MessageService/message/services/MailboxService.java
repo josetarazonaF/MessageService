@@ -6,9 +6,11 @@ import com.globant.MessageService.message.entities.Message;
 import com.globant.MessageService.message.repositories.LabelRepository;
 import com.globant.MessageService.message.repositories.MessageRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +50,7 @@ public class MailboxService {
             return messageList;
         }
 
-        throw new RuntimeException("User doesn't exist");
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     public List<Message> getSentMessages() {
@@ -57,7 +59,7 @@ public class MailboxService {
         if (userRepository.existsByUsername(username)) {
             return messageRepository.getMessagesBySender(username);
         }
-        throw new RuntimeException("User doesn't exist");
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     public void sendMessage(Message message) {
@@ -79,7 +81,7 @@ public class MailboxService {
             message.setSender(username);
             messageRepository.save(message);
         } else {
-            throw new RuntimeException("User doesn't exist");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
